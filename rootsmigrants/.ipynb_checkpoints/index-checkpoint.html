@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <title>Roots & Migrants</title>
+    <link
+      href="https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Inconsolata"
+    />
+    <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css"
+    />
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/d3-quadtree.v1.min.js"></script>
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/timeline.css" />
+    <link rel="stylesheet" href="css/magnific.css" />
+    <link rel="stylesheet" href="css/modal.css" />
+    <link rel="stylesheet" href="css/navigation.css" />
+    <link rel="stylesheet" href="css/legend.css" />
+    <link rel="stylesheet" href="css/slider.css" />
+    <link rel="stylesheet" href="css/historylayer.css" />
+
+    <link rel="stylesheet" href="css/layer.css" />
+    <link rel="stylesheet" href="css/overlayhistory.css" />
+
+    <link rel="stylesheet" href="css/overlaypop.css" />
+
+    <script src="https://d3js.org/colorbrewer.v1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-statistics@7.8.1/dist/simple-statistics.min.js"></script>
+  </head>
+  <body>
+    <div class="container-fluid p-0">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <span id="roots" onclick="showVideoTutorial()">Roots & Migrants</span>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            id="animation-tab"
+            data-toggle="tab"
+            href="#animation-content"
+            role="tab"
+            aria-controls="animation-content"
+            aria-selected="true"
+            >History</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="population-tab"
+            data-toggle="tab"
+            href="#population-content"
+            role="tab"
+            aria-controls="population-content"
+            aria-selected="false"
+            >Population</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="migration-tab"
+            data-toggle="tab"
+            href="#migration-content"
+            role="tab"
+            aria-controls="migration-content"
+            aria-selected="false"
+            >Migration</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="compare-tab"
+            href="https://lorettanwa.github.io/compare/"
+            target="_blank"
+            role="tab"
+            aria-controls="compare-content"
+            aria-selected="false"
+            >Compare</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="overlay-tab"
+            href="https://lorettanwa.github.io/layer/"
+            target="_blank"
+            role="tab"
+            aria-controls="visualization-content"
+            aria-selected="false"
+            >Overlay</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="contactLink"
+            data-toggle="modal"
+            data-target="#contactModal"
+            role="tab"
+            aria-selected="false"
+            >Contact</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="aboutLink"
+            data-toggle="modal"
+            data-target="#aboutModal"
+            role="tab"
+            aria-selected="false"
+            >About</a
+          >
+        </li>
+        <li class="nav-item ml-auto">
+          <a href="https://www.geo-social.com/" target="_blank">
+            <img src="img/geosocialLogo.png" alt="Logo" class="logo" />
+          </a>
+
+          <a href="https://uiowa.edu/" target="_blank">
+            <img src="img/logo_uiowa.png" alt="Logo" class="logo" />
+          </a>
+
+          <a href="https://www.nsf.gov/" target="_blank">
+            <img src="img/nsf.jpg" alt="Logo" class="logo" />
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- Contact Modal -->
+    <div
+      class="modal fade"
+      id="contactModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="contactModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title" id="contactModalLabel">Contact Email</h1>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Email:</strong> geo-social@uiowa.edu</p>
+            <p>
+              Please contact us for any help using Roots&Migrants. Here are some
+              example feedback:
+            </p>
+            <ul>
+              <li>
+                Tell us about any bugs or problems you experienced with the
+                interface and interactions.
+              </li>
+              <li>Suggest new additions to Roots&Migrants.</li>
+              <li>
+                We are happy to hear any feedback and looking forward to
+                improving your experience with Roots&Migrants.
+              </li>
+            </ul>
+            <p>
+              <strong>Website:</strong>
+              <a href="https://www.geo-social.com" target="_blank"
+                >www.geo-social.com</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- About Modal -->
+    <div
+      class="modal fade"
+      id="aboutModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="aboutModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title" id="aboutModalLabel">
+              About Roots&Migrants
+            </h1>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Version:</strong> 1.0</p>
+            <p><strong>Developers:</strong> Loretta Nwajiaku (2024)</p>
+            <p><strong>Contributors:</strong></p>
+            <ul>
+              <li>
+                <strong>The Geo-Social Lab:</strong> Jinyi Cai, Maryam
+                Torkashvand, Chuan Hang Chan, Liz Hollingworth.
+              </li>
+              <li>
+                <strong>High School Teachers:</strong> Gineal Schrunk, Stacey
+                Strief, Amy Jones, Megan Johnson-Gott, Scott Jespersen, Zachary
+                Ficken, Rodney Egel.
+              </li>
+              <li>
+                <strong>High School Students:</strong> Ariana Luan, Sumin Bae,
+                Devesh Aggarwal.
+              </li>
+            </ul>
+            <p><strong>Supervisor/Developer:</strong> Caglar Koylu</p>
+            <p>
+              <strong>Citation:</strong> Please cite the reference below if you
+              use Roots & Migrants in a manuscript or any form of publication
+            </p>
+            <p><!-- Article Reference --></p>
+            <p>
+              <strong>Notice:</strong> While the historical information
+              contained in this story map application has been thoroughly
+              researched, users are encouraged to independently verify its
+              accuracy and relevance to their specific context.
+            </p>
+            <p><!-- References --></p>
+            <p>
+              <strong>References:</strong> You can download the full list of
+              references from this PDF:
+              <a href="assets/Map_References.docx" target="_blank"
+                >References</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Tabs Content -->
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="animation-content"
+        role="tabpanel"
+        aria-labelledby="animation-tab"
+      >
+        <div id="container">
+          <div class="story-modal">
+            <button class="toggle-timeline">_</button>
+            <!-- Button to toggle collapse/expand -->
+
+            <p class="timeline-heading">Events</p>
+            <div class="timeline"></div>
+            <!-- The Modal -->
+            <div class="modal-event">
+              <span class="close-modal">&times;</span>
+              <div class="modals-content"></div>
+            </div>
+          </div>
+          <div class="story-pop-up">
+            <p class="story">Story</p>
+            <span class="close-pop-up">&times;</span>
+            <!-- Close button for the pop-up -->
+          </div>
+          <div id="map">
+            <div
+              id="north-arrow"
+              class="north-arrow"
+              style="
+                background: url('img/northarrow.svg') no-repeat center center;
+                background-size: contain;
+              "
+            ></div>
+
+            <!-- Layer Icon -->
+            <div
+              id="layer-icon-container-animation"
+              class="layer-icon-container"
+            >
+              <img
+                id="layer-icon-animation"
+                src="img/layericon.png"
+                alt="Layer Icon"
+                class="layer-icon"
+              />
+              <!-- Layer Control Toggle -->
+              <div
+                id="layer-toggle-animation"
+                class="layer-toggle"
+                style="display: none"
+              >
+                <img src="img/layericon.png" alt="Toggle Layers" width="20" />
+              </div>
+
+              <!-- Layer Control Panel (initially hidden) -->
+              <div
+                id="layer-control-animation"
+                class="layer-control"
+                style="display: none"
+              >
+                <div class="layer-group">
+                  <div class="layer-group-title">Cessions</div>
+                  <div class="layer-subgroup-title">Treaties</div>
+
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="Arizona-NewMexico" checked />
+                    Arizona-NewMexico
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="Oregon" checked /> Oregon Treaty
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="florida" checked /> Adam-Onis
+                    Treaty
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="purchase" checked /> Louisiana
+                    purchase
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="Gadsden" checked /> Gadsden
+                    Purchase
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="Texas" checked /> Texas
+                    Annexation
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="Mexican" checked /> Mexican
+                    Cession
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="population-content"
+        role="tabpanel"
+        aria-labelledby="population-tab"
+      >
+        <div id="container">
+          <div class="story-modal">
+            <p class="timeline-heading">Events</p>
+            <div class="timeline"></div>
+            <!-- The Modal -->
+            <div class="modal-event">
+              <span class="close-modal">&times;</span>
+              <div class="modals-content"></div>
+            </div>
+          </div>
+          <div class="story-pop-up">
+            <p class="story">Story</p>
+            <span class="close-pop-up">&times;</span>
+            <!-- Close button for the pop-up -->
+          </div>
+          <div id="mapDen">
+            <div
+              id="norths-arrow"
+              class="north-arrow"
+              style="
+                background: url('img/northarrow.svg') no-repeat center center;
+                background-size: contain;
+              "
+            ></div>
+            <div
+              id="layer-icon-container-population"
+              class="layer-icon-container"
+            >
+              <!-- Layer Icon -->
+              <img
+                id="layer-icon-population"
+                src="img/layericon.png"
+                alt="Layer Icon"
+                class="layer-icon"
+              />
+
+              <!-- Layer Control Toggle -->
+              <div
+                id="layer-toggle-population"
+                class="layer-toggle"
+                style="display: none"
+              >
+                <img src="img/layericon.png" alt="Toggle Layers" width="20" />
+              </div>
+
+              <!-- Layer Control Panel -->
+              <div
+                id="layer-control-population"
+                class="layer-control"
+                style="display: none"
+              >
+                <div class="layer-group">
+                  <div class="layer-group-title">- Movements</div>
+                  <div class="layer-subgroup-title">Trails</div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="tears" checked /> Trails of Tears
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="Oregon" checked /> Oregon Trails
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="mormon" checked /> Mormon Trail
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="cali-trails" checked />
+                    California Trails
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="sante-fe-trail" checked /> Santa
+                    Fe Trail
+                  </div>
+                </div>
+                <div class="layer-group">
+                  <div class="layer-group-title">- Infrastructure</div>
+                  <div class="layer-subgroup-title">Transportation</div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="railroads" checked /> Railroads
+                  </div>
+                  <div class="layer-checkbox">
+                    <input type="checkbox" id="erie-canal" checked /> Erie Canal
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="loader">Loading...</div>
+          <!-- Density Legend -->
+          <div id="density-legend" class="legend">
+            <p class="legend-title">Population Density (per Sq. km)</p>
+            <p id="legend-year-density">Year: 1800</p>
+            <div class="item">
+              <div class="color" style="background-color: #f7f7f7"></div>
+              <span>0 to 1.94 (Highly Sparse)</span>
+            </div>
+            <div class="item">
+              <div class="color" style="background-color: #cccccc"></div>
+              <span>1.94 to 4.35 (Moderately Sparse)</span>
+            </div>
+            <div class="item">
+              <div class="color" style="background-color: #969696"></div>
+              <span>4.35 to 8.16 (Moderately Dense)</span>
+            </div>
+            <div class="item">
+              <div class="color" style="background-color: #636363"></div>
+              <span>8.16 to 12.66 (Dense)</span>
+            </div>
+            <div class="item">
+              <div class="color" style="background-color: #252525"></div>
+              <span>12.66 to 1017.24 (Highly Dense)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="migration-content"
+        role="tabpanel"
+        aria-labelledby="migration-tab"
+      >
+        <div id="container">
+          <div class="story-modal">
+            <p class="timeline-heading">Events</p>
+            <div class="timeline"></div>
+            <!-- The Modal -->
+            <div class="modal-event">
+              <span class="close-modal">&times;</span>
+              <div class="modals-content"></div>
+            </div>
+          </div>
+          <div class="story-pop-up">
+            <p class="story">Story</p>
+            <span class="close-pop-up">&times;</span>
+            <!-- Close button for the pop-up -->
+          </div>
+          <div id="mapMig">
+            <div
+              id="north-arrows"
+              class="north-arrow"
+              style="
+                background: url('img/northarrow.svg') no-repeat center center;
+                background-size: contain;
+              "
+            ></div>
+            <!-- <div
+              id="layer-icon-container-migration"
+              class="layer-icon-container"
+            >
+              <img
+                id="layer-icon-migration"
+                src="img/layericon.png"
+                alt="Layer Icon"
+                class="layer-icon"
+              />
+            </div> -->
+          </div>
+          <!-- Migration Legend -->
+          <div id="maps-legends" class="maps-legends">
+            <p class="legend-title">Net Flow Ratio</p>
+            <p id="legends-year">Year: 1800</p>
+            <div class="legend-items">
+              <div class="color-boxs" style="background-color: #fddbc7"></div>
+              <span>-0.15 to 0 (Outmigrants &gt; Inmigrants)</span>
+            </div>
+            <div class="legend-items">
+              <div class="color-boxs" style="background-color: #d1e5f0"></div>
+              <span>0 to 0.15 (Outmigrants &gt; Inmigrants)</span>
+            </div>
+            <div class="legend-items">
+              <div class="color-boxs" style="background-color: #92c5de"></div>
+              <span>0.15 to 0.30 (Inmigrants ≈ Outmigrants)</span>
+            </div>
+            <div class="legend-items">
+              <div class="color-boxs" style="background-color: #4393c3"></div>
+              <span>0.30 to 0.45 (Inmigrants &gt; Outmigrants)</span>
+            </div>
+            <div class="legend-items">
+              <div class="color-boxs" style="background-color: #2166ac"></div>
+              <span>0.45 to 0.70 (Inmigrants &gt; Outmigrants)</span>
+            </div>
+            <div class="legend-items">
+              <div class="color-boxs" style="background-color: lightgrey"></div>
+              <span>Missing Data</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Slider Control -->
+    <div id="slider-container">
+      <input
+        type="range"
+        id="slider"
+        min="1790"
+        max="1999"
+        step="1"
+        value="1790"
+      />
+      <div class="tick-container"></div>
+      <div id="slider-tooltip-container">
+        <div id="slider-tooltip">1790</div>
+      </div>
+      <div class="year-labels"></div>
+
+      <div class="button-container">
+        <button id="toggle-button">
+          <img id="toggle-icon" src="img/play.jpg" alt="Play" />
+        </button>
+      </div>
+      <!-- Tooltip for displaying the current year -->
+      <!-- <div id="slider-tooltip">1790</div> -->
+    </div>
+    <!-- Tooltip -->
+    <div id="tooltip" class="tooltip"></div>
+    <!-- Welcome Popup -->
+    <div
+      id="Welcome-Block"
+      class="info-blocks white-popup mfp-with-anim mfp-hide"
+      style="width: 65%; height: 65%; top: 0"
+    >
+      <div id="popup-content">
+        <img
+          id="WelcomeBackground-Img"
+          src="img/WelcomeBackground.png"
+          alt="Welcome"
+          style="width: 100%; height: 100%"
+        />
+        <button id="GetStarted-Btn" class="btn btn-primary" style="z-index: 1">
+          Get Started
+        </button>
+        <button
+          id="SkipTutorial-Btn"
+          class="btn btn-primary"
+          style="z-index: 1"
+        >
+          Skip Tutorial
+        </button>
+      </div>
+    </div>
+    <!-- Video Tutorial Popup Content (Initially Hidden) -->
+    <div
+      id="VideoTutorial-Block"
+      class="info-blocks white-popup mfp-with-anim mfp-hide InfoBoxes"
+    >
+      <h1 class="text-left">Video Tutorial</h1>
+      <iframe
+        title="Tutorial video"
+        style="width: 100%; height: 70vh"
+        src="https://www.youtube.com/embed/w_UbZE5HgxM"
+        allow="fullscreen"
+      ></iframe>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+    <script src="js/tutorial.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/timeline.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/density.js"></script>
+    <script src="js/migration.js"></script>
+    <script src="js/slider.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/historylayer.js"></script>
+    <script src="js/poplayer.js"></script>
+  </body>
+</html>
