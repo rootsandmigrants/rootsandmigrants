@@ -56,7 +56,7 @@ const animNamespace = {
           },
         },
         glyphs:
-          "https://geosocial.geography.uiowa.edu/fonts/glyphs/{fontstack}/{range}.pbf",
+          "https://rootsandmigrants.github.io/fonts/glyphs/{fontstack}/{range}.pbf",
 
         layers: [
           {
