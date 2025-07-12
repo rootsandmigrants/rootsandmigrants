@@ -114,8 +114,9 @@ const densityNamespace = {
               '<a href="https://www.esri.com/" target="_blank">Esri</a>| <a href="https://www.nhgis.org/" target="_blank">IPUMS NHGIS</a>',
           },
         },
+        // This is your glyphs endpoint
         glyphs:
-          "https://geosocial.geography.uiowa.edu/fonts/glyphs/{fontstack}/{range}.pbf",
+          "https://rootsandmigrants.github.io/fonts/glyphs/{fontstack}/{range}.pbf",
         layers: [
           {
             id: "esriWorldPhysical-layer",
